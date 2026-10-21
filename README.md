@@ -119,8 +119,9 @@ online.
 - Pictures of places and their captions are Bing's daily images (Microsoft). The launcher fetches them on your
   own TV; the promo pictures above show three of them.
 - Gotham, used in the promo pictures only, is a Hoefler&Co. typeface and is not part of this repository.
-   - name: Upload APK
+-  name: Upload APK
      uses: actions/upload-artifact@v4
      with:
        name: glass-tv-apk
        path: launcher/app/build/outputs/apk/release/app-release.apk
+
