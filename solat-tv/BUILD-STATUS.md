@@ -1,18 +1,16 @@
-# Status — 24 October 2026
+# Verified build — 24 October 2026
 
-Implemented source for Kuala Terengganu TRG01, e-Solat JAKIM monthly data with validated dated cache, active-screensaver azan, optional audio import, and four rotating licensed mosque photographs.
+Source commit: `2382a9400bb3e5c13a923287475b39cf2be6b7a3`.
+Run: https://github.com/Shafeekz-alt/glass-tv/actions/runs/40092291214
 
-Validation completed:
-- Nine real scheduling-core checks compiled and executed successfully with assertions enabled (dependency-free Java runner).
-- Nine production Java files parsed successfully for syntax.
-- Four XML files, four photo metadata entries, and workflow YAML parsed successfully.
-- Independent source review found no concrete high/medium issues in reviewed lifecycle, cache, audio and photo paths.
+- GitHub Actions `testDebugUnitTest assembleRelease`: passed.
+- Live official JAKIM TRG01 current-month zone, dates, completeness and ordered prayer times: passed. JAKIM returns Malay month names; parser now supports these, English abbreviations and ISO dates, with regression tests.
+- Licensed azan downloaded successfully and verified inside the APK.
+- APK extracted from the downloaded artifact; archive digest verified against GitHub.
+- Nine local scheduling checks passed; ten production Java files passed syntax parsing.
 
-Still blocked/unverified:
-- Local Android SDK/build dependencies are unavailable. GitHub Actions is configured to compile and test the APK; see the latest workflow run for its result.
-- No APK compiled or installed.
-- Live JAKIM JSON response and exact schema not exercised from this environment; expected response parser remains to be validated.
-- Built-in audio recording not downloaded/auditioned; download script and proper attribution are supplied.
-- Photo URLs/license pages verified on the web; downloads, rendering, audio focus and DreamService activation not tested on a device/emulator.
+APK SHA-256: `8c7da229ecbd91c0619b3cce65c0801181ede5f6b3576b776ff1b29d3a9cc9eb`.
 
-No changes were sent to the user's TV.
+Still requires device validation: Android TV installation, dream selection/exit, live photos, audio playback/focus, and comparison with the user's daily JAKIM timetable. Azan only operates while the screensaver is active; it does not wake a sleeping/off TV or interrupt another app. No changes have been sent to the user's TV.
+
+The APK uses a temporary debug signing key from the CI runner. Future compatible updates require persisting a signing key, otherwise uninstall/reinstall is needed.

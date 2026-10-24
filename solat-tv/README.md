@@ -4,8 +4,9 @@ Native Android TV screensaver requested for Xiaomi TV Box S 3rd generation (MiTV
 
 ## Current status
 
-- Source implemented; nine dependency-free scheduling checks have passed on Java 21.
-- Android APK compilation, device playback and live JAKIM JSON integration have **not** been verified yet. Do not describe this source package as an installable APK.
+- APK successfully compiled with `testDebugUnitTest assembleRelease` on GitHub Actions. Scheduling and Malay-date parser tests passed. Nine dependency-free scheduling checks also passed locally.
+- The official current-month JAKIM response for TRG01 passed a live schema/date/time check on 24 October 2026. Actual TV display, photo loading and azan playback still need device testing.
+- Verified build: https://github.com/Shafeekz-alt/glass-tv/actions/runs/40092291214 (source commit `2382a9400bb3e5c13a923287475b39cf2be6b7a3`).
 - The optional bundled azan must be downloaded before building (see `tools/download-audio.sh` and attribution). Without it, the UI explicitly says no audio is configured and allows choosing a local audio file.
 
 ## Behavior
@@ -14,7 +15,7 @@ Native Android TV screensaver requested for Xiaomi TV Box S 3rd generation (MiTV
 - Source: https://www.e-solat.gov.my/index.php?pageId=50&siteId=24
 - Monthly JSON request, made directly by the TV over HTTPS:
   `https://www.e-solat.gov.my/index.php?r=esolatApi/takwimsolat&period=month&zone=TRG01&year=2026&month=10`
-  Year/month are calculated at runtime in `Asia/Kuala_Lumpur`. The actual endpoint must be live-tested; its expected schema is `status`, `zone`, and `prayerTime` with dated prayer entries.
+  Year/month are calculated at runtime in `Asia/Kuala_Lumpur`. The current-month endpoint was live-tested; its schema is `status`, `zone`, and `prayerTime` with dated prayer entries.
 - Shows Subuh, Syuruk, Zohor, Asar, Maghrib, Isyak. Next-prayer countdown and azan exclude Syuruk.
 - Only the five obligatory prayer events play azan, and only when the screensaver was already active at that event's scheduled time. There is no background alarm while another app is open or the TV is off/asleep.
 - At most a 30-second scheduling grace period, no late catch-up when the screensaver starts, persistent per-date/per-prayer deduplication. Button press exits the dream and stops audio. Preview does not trigger scheduled sound.
@@ -32,7 +33,7 @@ bash tools/download-audio.sh
 gradle --no-daemon testDebugUnitTest assembleRelease
 ```
 
-Output: `app/build/outputs/apk/release/app-release.apk`. This personal sideload build uses Gradle's local debug signing key; preserve that key for compatible updates. It is not a publisher-signed Glass TV release. No APK is included while the build is unverified.
+Output: `app/build/outputs/apk/release/app-release.apk`. This personal sideload build uses Gradle's local debug signing key; preserve that key for compatible updates. It is not a publisher-signed Glass TV release. The GitHub Actions artifact contains the signed personal-build APK; artifacts expire after seven days.
 
 In the Glass TV repository, this app lives in `solat-tv/`. The root workflow `.github/workflows/waktu-solat.yml` builds it on changes to this folder or via **Actions → Build Waktu Solat TV APK → Run workflow**. Download **Waktu-Solat-TV-APK** from a successful run and extract `app-release.apk` on the phone. The original Glass TV launcher is a separate app.
 
@@ -60,6 +61,6 @@ Optional audio, unmodified: **The Adhan – Muslim Call to Prayer – Aaqib Azee
 - https://commons.wikimedia.org/wiki/File:The_Adhan_-_Muslim_Call_to_Prayer_-_Aaqib_Azeez.mp3
 - https://creativecommons.org/licenses/by-sa/4.0/
 
-The recording has been identified by its licensed source page, but has not yet been downloaded or auditioned in this workspace. It is a general azan recording; a separate Subuh recording can be added later if requested. No audio recording is attributed to JAKIM.
+The recording was downloaded by the successful build and verified present in the APK. It has not been auditioned on the TV. Its SHA-256 is `0faa59e2028bbb2f60a670b53ec89ffcf628f3c195b43fb41d9bdbc99000c1b3`. It is a general azan recording; a separate Subuh recording can be added later if requested. No audio recording is attributed to JAKIM.
 
 Photo catalog and attribution: `app/src/main/assets/mosques.json`. CC BY-SA licenses apply to their respective photos. Rendering crops them to fill the screen and adds a dimming layer; original cached image bytes are not altered. Live in-app download/rendering has not yet been device-tested.
