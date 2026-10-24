@@ -47,6 +47,12 @@ java -ea -cp build/core-checks CoreChecks
 
 These run the real scheduling class; they are not an Android emulator or JUnit run. Standard JUnit4 tests are also included for the Gradle build.
 
+## Back shortcut from Glass TV
+
+Install Waktu Solat 1.1 and the companion Glass TV 2.3.1 APK from this fork. From the Glass TV home screen, press **Back** to open the prayer screensaver immediately. Back still closes an open launcher menu or finishes moving a tile first. If the companion app is absent/outdated, the launcher shows an installation message.
+
+This shortcut opens a fullscreen activity using the same prayer display, photo rotation and active-session azan controller as the Android dream. Back, OK or a directional key closes it; audio and downloads stop when it leaves the foreground. Volume and mute work normally. Home/Power retain their system behavior. Manual mode keeps the display awake only while it is visible and never wakes a sleeping TV. It does not intercept Back in other apps. Automatic idle screensaver selection still uses `PrayerDream`.
+
 ## Later installation using the connected phone
 
 After the APK is built and verified: download it on the phone, use Bugjaeger Packages → + → install APK on the selected MiTV-AFMU0. Open **Waktu Solat** from the TV app list, verify the day's times against JAKIM and use **Uji bunyi azan**. Use **Buka tetapan screensaver TV** and select **Waktu Solat • Kuala Terengganu**.

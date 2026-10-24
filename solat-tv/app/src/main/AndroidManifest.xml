@@ -12,6 +12,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".PreviewActivity" android:exported="false" android:screenOrientation="landscape" />
+        <activity android:name=".ScreensaverActivity" android:exported="true"
+            android:noHistory="true" android:excludeFromRecents="true"
+            android:launchMode="singleTop" android:screenOrientation="landscape" />
         <service android:name=".PrayerDream" android:label="Waktu Solat • Kuala Terengganu" android:exported="true" android:permission="android.permission.BIND_DREAM_SERVICE">
             <intent-filter><action android:name="android.service.dreams.DreamService" /></intent-filter>
             <meta-data android:name="android.service.dream" android:resource="@xml/dream" />

@@ -798,7 +798,18 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
     @Override
     public void onBackPressed() {
-        // Home screen: Back goes nowhere.
+        // Menus and tile-move mode consume Back before it reaches this method.
+        // An explicit activity needs neither dream-manager privileges nor a global key hook.
+        Intent screensaver = new Intent().setClassName(
+                "my.solat.tv", "my.solat.tv.ScreensaverActivity");
+        screensaver.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        try {
+            startActivity(screensaver);
+        } catch (android.content.ActivityNotFoundException | SecurityException ex) {
+            android.widget.Toast.makeText(this,
+                    "Pasang atau kemas kini Waktu Solat 1.1 untuk membuka screensaver.",
+                    android.widget.Toast.LENGTH_LONG).show();
+        }
     }
 
     // ---- glass highlight -------------------------------------------------------------------------
