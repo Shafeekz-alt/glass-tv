@@ -24,7 +24,10 @@ keys = ("fajr", "syuruk", "dhuhr", "asr", "maghrib", "isha")
 seen = set()
 for row in data["prayerTime"]:
     try:
-        date = dt.datetime.strptime(row["date"], "%d-%b-%Y").date()
+        normalized = row["date"].lower()
+        for malay, english in {"mac": "mar", "mei": "may", "ogo": "aug", "okt": "oct", "dis": "dec"}.items():
+            normalized = normalized.replace(f"-{malay}-", f"-{english}-")
+        date = dt.datetime.strptime(normalized, "%d-%b-%Y").date()
     except ValueError:
         date = dt.date.fromisoformat(row["date"])
     assert (date.year, date.month) == (today.year, today.month), "Wrong month"

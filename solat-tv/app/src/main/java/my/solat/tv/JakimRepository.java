@@ -78,13 +78,10 @@ public final class JakimRepository {
         JSONArray rows = root.getJSONArray("prayerTime");
         List<PrayerSchedule.Day> result = new ArrayList<>();
         Set<LocalDate> seen = new HashSet<>();
-        DateTimeFormatter format = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("dd-MMM-uuuu").toFormatter(Locale.ENGLISH).withResolverStyle(ResolverStyle.STRICT);
         for (int i = 0; i < rows.length(); i++) {
             JSONObject row = rows.getJSONObject(i);
             String rawDate = row.getString("date");
-            LocalDate date;
-            try { date = LocalDate.parse(rawDate, format); }
-            catch (DateTimeParseException ex) { date = LocalDate.parse(rawDate, DateTimeFormatter.ISO_LOCAL_DATE); }
+            LocalDate date = JakimDate.parse(rawDate);
             if (!YearMonth.from(date).equals(requested)) throw new JSONException("Unexpected date");
             if (!seen.add(date)) throw new JSONException("Duplicate date");
             Map<String, LocalTime> times = new LinkedHashMap<>();
