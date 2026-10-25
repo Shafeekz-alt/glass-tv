@@ -223,7 +223,7 @@ const ZONE='TRG01', TZ='Asia/Kuala_Lumpur', PERIOD_MS=5*60*1000;
 const $=id=>document.getElementById(id);
 const prayerFields=[['fajr','Subuh'],['syuruk','Syuruk'],['dhuhr','Zohor'],['asr','Asar'],['maghrib','Maghrib'],['isha','Isyak']];
 const list=window.HADIS_40||[];
-const preview=true;
+const preview=false; // TV build: use live clock and JAKIM; never demo times.
 let currentTimes=null, originLabel='', lastDate='', hadisIndex=0, hadisStarted=Date.now(), toastTimer;
 
 function msDate(d=new Date()){return new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit'}).format(d);}
