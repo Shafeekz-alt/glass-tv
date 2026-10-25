@@ -2,7 +2,7 @@ plugins { id 'com.android.application' }
 android {
  namespace 'com.shafeekz.glasstv.ktpreview'
  compileSdk 34
- defaultConfig { applicationId 'com.shafeekz.glasstv.ktpreview2'; minSdk 26; targetSdk 34; versionCode 2; versionName '0.2-preview' }
+ defaultConfig { applicationId 'com.shafeekz.glasstv.ktpreview3'; minSdk 26; targetSdk 34; versionCode 3; versionName '0.3-preview' }
  buildTypes { release { signingConfig signingConfigs.debug; minifyEnabled false } }
  compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
 }
