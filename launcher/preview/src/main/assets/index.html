@@ -244,7 +244,7 @@ function clock(){
     const bulan=['Muharam','Safar','Rabiulawal','Rabiulakhir','Jamadilawal',
       'Jamadilakhir','Rejab','Syaaban','Ramadan','Syawal','Zulkaedah','Zulhijah'];
     const monthIndex=Number(hijriParts.month)-1;
-    if(monthIndex<0||monthIndex>11||!/^\\d+$/.test(hijriParts.year))throw new Error('Hijri date unavailable');
+    if(monthIndex<0||monthIndex>11||!Number.isInteger(Number(hijriParts.year)))throw new Error('Hijri date unavailable');
     $('hijri-date').textContent=Number(hijriParts.day)+' '+bulan[monthIndex]+' '+hijriParts.year+'H (anggaran)';
   } catch(e) { $('hijri-date').textContent='Tarikh Hijrah belum tersedia'; }
   if(!preview && lastDate && msDate()!==lastDate){lastDate=msDate();currentTimes=null;wipeTimes();refreshPrayers();}
