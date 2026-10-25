@@ -49,7 +49,7 @@ button{font:inherit;cursor:pointer}
 .data-status{color:#eadaca;font-size:.75cqw;border-left:1px solid #ffffff42;padding-left:.7cqw}.data-status.ok{color:#d2fad8}.data-status.bad{color:#ffbcb3}
 .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 /* Right glass hadith card matches reference 640×250 @1536 wide */
-.hadith-panel{position:absolute;right:5.75%;top:17.15%;width:41.7%;height:29.5%;border:1px solid #ffffff78;border-radius:1.45cqw;background:#ffffff24;backdrop-filter:blur(13px);box-shadow:inset 0 1px #ffffff36,0 9px 28px #0b04072a;padding:1.26cqw 1.8cqw 1.3cqw;display:flex;flex-direction:column;overflow:hidden}
+.hadith-panel{position:absolute;right:5.75%;top:17.15%;width:41.7%;height:29.5%;border:1px solid #ffffff78;border-radius:1.45cqw;background:#291d3073;backdrop-filter:blur(13px);box-shadow:inset 0 1px #ffffff36,0 9px 28px #0b04072a;padding:1.26cqw 1.8cqw 1.3cqw;display:flex;flex-direction:column;overflow:hidden}
 .hadith-head{display:flex;align-items:center;justify-content:space-between;gap:1cqw;flex:none}
 .section-kicker{font-size:.96cqw;letter-spacing:.08em;font-weight:770;color:#f3d59a}
 .round-tag{font-size:.84cqw;font-weight:620;color:#f1e4d6;background:#ffffff23;border:1px solid #ffffff31;border-radius:2cqw;padding:.32cqw .6cqw;font-variant-numeric:tabular-nums}
@@ -104,7 +104,7 @@ button{font:inherit;cursor:pointer}
       </button>
       <button class="control info-pill wifi-pill" id="wifiButton" title="Maklumat Wi-Fi (pratonton)">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.4 8.6c5.8-4.9 13.4-4.9 19.2 0M5.7 12.2a9.6 9.6 0 0 1 12.6 0M9 16a4.7 4.7 0 0 1 6 0"/><circle cx="12" cy="19.5" r="1.3" fill="currentColor" stroke="none"/></svg>
-        <span id="wifi-label">Fazreen_5GHz</span>
+        <span id="wifi-label">Wi-Fi</span>
       </button>
       <button class="control circle" id="settingsButton" aria-label="Buka Settings" aria-expanded="false" title="Settings">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.4 2.2h5.2l.7 2.2 1.9.8 2.1-1 3.2 3.2-1.1 2.1.8 1.9 2.2.7v4.5l-2.2.7-.8 1.9 1.1 2.1-3.2 3.2-2.1-1-1.9.8-.7 2.2H9.4l-.7-2.2-1.9-.8-2.1 1-3.2-3.2 1.1-2.1-.8-1.9-2.2-.7v-4.5l2.2-.7.8-1.9-1.1-2.1 3.2-3.2 2.1 1 1.9-.8z" transform="translate(2 1) scale(.83)"/><circle cx="12" cy="12" r="3.5"/></svg>
@@ -223,7 +223,7 @@ const ZONE='TRG01', TZ='Asia/Kuala_Lumpur', PERIOD_MS=5*60*1000;
 const $=id=>document.getElementById(id);
 const prayerFields=[['fajr','Subuh'],['syuruk','Syuruk'],['dhuhr','Zohor'],['asr','Asar'],['maghrib','Maghrib'],['isha','Isyak']];
 const list=window.HADIS_40||[];
-const preview=false; // TV build: use live clock and JAKIM; never demo times.
+const preview=false; // Native TV build: use live clock and JAKIM; never demo times.
 let currentTimes=null, originLabel='', lastDate='', hadisIndex=0, hadisStarted=Date.now(), toastTimer;
 
 function msDate(d=new Date()){return new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit'}).format(d);}
@@ -234,8 +234,19 @@ function clock(){
   $('clock').textContent=parts.filter(x=>['hour','minute','literal'].includes(x.type)).map(x=>x.value).join('').trim();
   $('am-pm').textContent=parts.find(x=>x.type==='dayPeriod')?.value||'';
   $('day-date').textContent=new Intl.DateTimeFormat('en-US',{timeZone:TZ,day:'numeric',month:'short',year:'numeric'}).format(now).toUpperCase();
-  try { const hijri=new Intl.DateTimeFormat('ms-MY-u-ca-islamic-umalqura',{timeZone:TZ,day:'numeric',month:'long',year:'numeric'}).format(now); $('hijri-date').textContent=hijri.replace(/^([0-9]+)\s/, '$1 ')+' (anggaran)'; }
-  catch { $('hijri-date').textContent='Tarikh Hijri (anggaran)'; }
+  try {
+    // ICU/WebView can wrongly localize Hijri month 5 as "Mei".
+    // Format Hijri month numerically and map it to verified Malay Islamic month names.
+    const hijriFormatter=new Intl.DateTimeFormat('en-US-u-ca-islamic-umalqura',
+      {timeZone:TZ,day:'numeric',month:'numeric',year:'numeric'});
+    if(hijriFormatter.resolvedOptions().calendar!=='islamic-umalqura')throw new Error('Calendar unavailable');
+    const hijriParts=Object.fromEntries(hijriFormatter.formatToParts(now).map(part=>[part.type,part.value]));
+    const bulan=['Muharam','Safar','Rabiulawal','Rabiulakhir','Jamadilawal',
+      'Jamadilakhir','Rejab','Syaaban','Ramadan','Syawal','Zulkaedah','Zulhijah'];
+    const monthIndex=Number(hijriParts.month)-1;
+    if(monthIndex<0||monthIndex>11||!/^\\d+$/.test(hijriParts.year))throw new Error('Hijri date unavailable');
+    $('hijri-date').textContent=Number(hijriParts.day)+' '+bulan[monthIndex]+' '+hijriParts.year+'H (anggaran)';
+  } catch(e) { $('hijri-date').textContent='Tarikh Hijrah belum tersedia'; }
   if(!preview && lastDate && msDate()!==lastDate){lastDate=msDate();currentTimes=null;wipeTimes();refreshPrayers();}
   updateNext();updateHadisProgress();
 }
