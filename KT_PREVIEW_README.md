@@ -7,3 +7,9 @@ Android 14 Xiaomi MiTV-AFMU0. UI based on the previous user's HTML V3 design. Pr
 Run GitHub Actions **Glass TV KT Preview APK**, download artifact **glass-tv-kuala-terengganu-preview-apk**, unzip then install **preview-release.apk** via Bugjaeger. Open **Glass TV KT Preview** in app list. This app has NO HOME intent filter and does not disable packages or change the default HOME.
 
 Do not replace or remove com.gathin.tvhome. No guarantee the live JAKIM endpoint works on every network; check the status badge. QA must be completed on the actual device.
+
+## Preview 2 fixes
+
+- Corrected `preview=true` regression that locked the clock to 8:08 PM on 24 October 2026 and labeled real prayer readings 'CONTOH UI'. Preview 2 runs `preview=false`, using the Android TV system time converted to Asia/Kuala_Lumpur and official JAKIM prayer data (no example times).
+- **New package name** `com.shafeekz.glasstv.ktpreview2` because GitHub-hosted build runners generate a fresh debug signing certificate. This means Preview 2 installs alongside Preview 1 rather than producing a `SIGNATURE_MISMATCH` error. It also continues to leave the installed HOME launcher `com.gathin.tvhome` untouched.
+- In Bugjaeger open `am start -n com.shafeekz.glasstv.ktpreview2/.PreviewActivity` after installing the new artifact. Settings, apps, and live JAKIM status still need testing on the TV.
