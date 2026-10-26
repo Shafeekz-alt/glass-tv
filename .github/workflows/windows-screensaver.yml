@@ -1,0 +1,32 @@
+name: Windows 11 Glass TV Screensaver
+on:
+  push:
+    branches: [codex/windows-11-screensaver]
+    paths:
+      - 'windows-screensaver/**'
+      - '.github/workflows/windows-screensaver.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows-scr:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build portable Windows x64 screensaver
+        shell: pwsh
+        run: |
+          dotnet publish windows-screensaver/GlassTvKtSaver.csproj --configuration Release --runtime win-x64 --self-contained true --output ./screensaver-output
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Copy-Item ./screensaver-output/GlassTvKtSaver.exe ./screensaver-output/GlassTV-KualaTerengganu.scr
+          if (!(Test-Path ./screensaver-output/GlassTV-KualaTerengganu.scr)) { throw 'SCR was not created' }
+          Get-Item ./screensaver-output/GlassTV-KualaTerengganu.scr | Select-Object Name, Length
+      - name: Upload Windows screensaver (.scr)
+        uses: actions/upload-artifact@v4
+        with:
+          name: GlassTV-KualaTerengganu-Windows11-SCR
+          path: screensaver-output/GlassTV-KualaTerengganu.scr
+          if-no-files-found: error
