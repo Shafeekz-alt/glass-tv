@@ -1,19 +1,57 @@
-# Glass TV Kuala Terengganu — Screensaver Windows 11
-Windows `.scr` sebenar, bukan APK. UI berdasarkan mockup TV yang diuji.
+# Glass TV Islamic Screensaver — Windows 11
 
-Fungsi: jam Malaysia, tarikh Masihi & Hijrah (Umm al-Qura, anggaran), solat TRG01 (e-Solat JAKIM dengan sandaran Solat.my), 42 ringkasan Hadis Nawawi bertukar setiap lima minit, visual dock dan empat butang.
+Screensaver **Windows .scr** (bukan APK Android TV), versi tanpa ikon aplikasi atau butang kawalan.
 
-**Windows screensaver bukan launcher.** Butang aplikasi, Wi-Fi, Settings, Power ialah paparan hiasan; apa-apa input menutup screensaver. Label National Geographic ialah hiasan UI dan bukannya feed rasmi. Tiada data cuaca langsung.
+## Paparan
 
-## Cara bina
-Buka Actions > Windows 11 Glass TV Screensaver pada GitHub, jalankan untuk branch `codex/windows-11-screensaver` atau tunggu workflow selepas push. Apabila hijau, muat turun artifact **GlassTV-KualaTerengganu-Windows11-SCR**, kemudian unzip kepada `GlassTV-KualaTerengganu.scr`. Tidak memerlukan Python di PC anda; Microsoft Edge WebView2 Runtime diperlukan (biasanya tersedia di Windows 11). Binaan tidak ditandatangani; gunakan hanya artifact dari repositori anda.
+- Jam dan tarikh Masihi secara langsung dalam zon Asia/Kuala_Lumpur
+- Tarikh Hijrah berdasarkan kalendar Umm al-Qura (ditanda anggaran)
+- Kuala Terengganu, Terengganu — waktu solat e-Solat JAKIM `TRG01`
+- Enam waktu: Subuh, Syuruk, Zohor, Asar, Maghrib dan Isyak
+- Kiraan waktu solat seterusnya dan status kemas kini data
+- Kad **42 ringkasan pengajaran Hadis 40 Imam Nawawi**, bertukar setiap 5 minit
+- Latar lembut dengan kad lutsinar; ruang bawah kosong dan nota untuk keluar
+- **Tiada YouTube, Disney+, Apple TV, BrowseHere, Main, Wi-Fi, Settings atau Power**
 
-## Uji
-Buka Command Prompt pada direktori yang mengandungi fail dan jalankan `GlassTV-KualaTerengganu.scr /s`. Gerakkan tetikus atau tekan kekunci untuk keluar. Pastikan waktu solat bukan simulasi dan pemeriksaan rangkaian berjaya.
+Semua butang dan ikon aplikasi Android TV telah dibuang daripada paparan. Screensaver tidak boleh mengubah aplikasi utama Windows; klik, pergerakan tetikus dan kekunci menamatkan paparan.
 
-## Install
-Selepas ujian, salin SCR ke `C:\Windows\System32\` (perlukan pentadbir); buka **Settings > Personalization > Lock screen > Screen saver** atau cari **Change screen saver** pada Start. Pilih GlassTV-KualaTerengganu dan tetapkan Wait. Untuk pulihkan keadaan, pilih None atau screensaver asal. Jangan padam screensaver asal.
+## Cara membina fail .scr
 
-**Had:** Paparan /p preview disokong, panel /c menunjukkan penerangan. Perlukan rangkaian untuk solat terkini. Data hari sama boleh diambil daripada cache jika sambungan gagal dengan label jelas. Tarikh Hijrah anggaran mungkin berbeza daripada pengisytiharan rasmi tempatan.
+1. Buka [GitHub Actions](https://github.com/Shafeekz-alt/glass-tv/actions).
+2. Pilih workflow **Windows 11 Glass TV Screensaver**.
+3. Pilih **Run workflow** dan branch `codex/windows-11-screensaver` (atau buka run terkini bagi branch ini).
+4. Jika status **Success** (hijau), muat turun artifact **GlassTV-KualaTerengganu-Windows11-SCR**.
+5. Ekstrak ZIP — fail `GlassTV-KualaTerengganu.scr`.
 
-Sumber: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/ms686421(v=vs.85) ; https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/distribution
+Sumber di branch ini ialah projek `.NET 8 Windows Forms + Microsoft Edge WebView2`. Binaan x64 di GitHub Actions menghasilkan fail tunggal `.scr` (tidak ditandatangani), jadi muat turun hanya daripada repositori sendiri. Windows memerlukan **Microsoft Edge WebView2 Runtime**. Tidak memerlukan Python atau Android SDK pada komputer.
+
+## Uji sebelum pasang
+
+Buka Command Prompt/Terminal dalam folder fail screensaver, kemudian jalankan:
+
+```bat
+GlassTV-KualaTerengganu.scr /s
+```
+
+Gerakkan tetikus atau tekan sebarang kekunci untuk keluar.
+
+**Semak:** Masa sekarang bukan 8:08 simulasi, zon `TRG01`, tarikh Hijrah bukan nama bulan Gregorian, dan status waktu solat bukan data rekaan. Jika JAKIM tidak dapat dihubungi, screensaver akan cuba sumber sandaran; jika masih gagal, waktu solat ditandakan tidak tersedia atau menggunakan cache **hari yang sama**, bukan masa rekaan.
+
+## Pasang pada Windows 11
+
+1. Selesai diuji, klik kanan `GlassTV-KualaTerengganu.scr` dan pilih **Install** jika menu tersebut muncul.
+2. Jika tidak tersedia, salin ke `C:\Windows\System32\` dengan kebenaran pentadbir.
+3. Cari **Change screen saver** dari Start.
+4. Pilih **GlassTV-KualaTerengganu**, tetapkan **Wait** (cth. 5 minit) dan tekan **Preview** untuk uji; kemudian Apply.
+5. Untuk kembali seperti asal: pilih None atau screensaver sebelumnya. Jangan padam fail sistem asal.
+
+## Nota
+
+- Tarikh Hijrah ialah anggaran astronomi dan mungkin tidak sama dengan pengisytiharan rasmi Malaysia.
+- `/p` ialah paparan kecil dalam tetapan screensaver; `/c` menunjukkan maklumat.
+- Menyokong berbilang monitor melalui tetingkap skrin penuh berasingan.
+- Paparan tidak mengutip data peribadi; jam sistem komputer digunakan.
+- Screensaver ini **bukan ciri keselamatan**. Untuk kunci komputer selepas waktu tidak aktif, aktifkan pilihan **On resume, display logon screen** dalam Windows.
+- Kod dan screenshot UI masih perlu diuji pada mesin Windows sebenar sebelum dianggap siap sepenuhnya.
+
+Dokumentasi Windows: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/ms686421(v=vs.85)
