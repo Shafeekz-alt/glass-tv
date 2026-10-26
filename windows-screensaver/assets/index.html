@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <meta name="theme-color" content="#171019">
-  <title>Glass TV · Kuala Terengganu · Hadis Nawawi</title>
+  <title>Glass TV Islamic Screensaver · Kuala Terengganu</title>
   <style>/* Glass TV / Kuala Terengganu — reproduction of reference layout, not a raster image.
    All dimensions are relative to the 16:9 TV stage so 720p, 1080p & 4K stay proportional. */
 :root{font-family:Arial,"Helvetica Neue",sans-serif;color:#fff;color-scheme:dark}
@@ -88,34 +88,46 @@ button{font:inherit;cursor:pointer}
 .settings-title .overline{font-size:.79cqw;letter-spacing:.17em;color:#f0cd93}.settings-title h2{font-size:2.1cqw;margin:.45cqw 0 0}.x-button{color:white;border:1px solid #fff7;background:#ffffff22;width:3cqw;height:3cqw;border-radius:50%;font-size:1.9cqw}
 .setting-row{display:flex;align-items:center;justify-content:space-between;gap:1.2cqw;padding:1.12cqw 0;border-bottom:1px solid #ffffff2b}.setting-row strong{font-size:1.14cqw}.setting-row small{display:block;color:#e2d3cc;margin-top:.42cqw;font-size:.83cqw;line-height:1.35}.value-pill,.action-btn{padding:.55cqw .9cqw;border-radius:1cqw;border:1px solid #f7d19f68;background:#ffffff18;color:#f7deb5;font-weight:660;font-size:.87cqw;white-space:nowrap}.settings-note{font-size:.86cqw;line-height:1.44;color:#e4d9d1;padding-top:1.2cqw}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+/* Windows screensaver: static, clean and without launcher icons/buttons. */
+.windows-saver .shade{background:linear-gradient(90deg,#170c1aaf 0%,#170c1a70 47%,#170c1aac 100%),linear-gradient(0deg,#120917e6,transparent 36%,#11091640 100%)}
+.saver-overline{position:absolute;top:10.5%;left:6.3%;font-size:1.03cqw;font-weight:680;letter-spacing:.20em;color:#ffe7bce8}
+.saver-overline span{padding:0 .7cqw;color:#ffca77}
+.windows-saver .clock-panel{left:6.3%;top:23.5%;width:50.1%;height:42%}
+.windows-saver .clock-line{height:9.6cqw}
+.windows-saver #clock{font-size:6.2cqw;line-height:1;letter-spacing:-.065em}
+.windows-saver .clock-meta{padding-top:1.2cqw}
+.windows-saver #am-pm{font-size:1.55cqw}
+.windows-saver #day-date{font-size:1.3cqw}
+.windows-saver .location-line{top:8.1cqw;font-size:1.12cqw}
+.windows-saver .prayer-items{top:10.7cqw;width:46.4cqw;height:5.45cqw;gap:.4cqw}
+.windows-saver .prayer{background:#1c102450;border:1px solid #ffffff29;border-radius:.65cqw}
+.windows-saver .prayer.active{border-color:#f4d59ac7;background:#d5ac713e;box-shadow:0 0 1cqw #f2c97d2e,inset 0 1px #ffffff54}
+.windows-saver .prayer span{font-size:1.04cqw}
+.windows-saver .prayer b{font-size:1.55cqw}
+.windows-saver .next-prayer{top:17cqw;font-size:1.18cqw}
+.windows-saver .next-prayer strong{font-size:1.18cqw}
+.windows-saver .prayer-source{top:19.1cqw;font-size:.88cqw}
+.windows-saver .data-status{font-size:.84cqw}
+.windows-saver .hadith-panel{right:6.2%;top:23.5%;width:36.3%;height:39%;padding:1.65cqw 1.75cqw 1.7cqw;background:#1b1522b9;box-shadow:0 15px 45px #0e091655,inset 0 1px #fff3;border-color:#ffffff70;border-radius:1.55cqw}
+.windows-saver .section-kicker{font-size:.96cqw}
+.windows-saver .hadith-body{gap:1cqw}
+.windows-saver .hadith-body h1{font-size:2cqw;line-height:1.15}
+.windows-saver .hadith-body p{font-size:1.24cqw;line-height:1.6;color:#fffdf7}
+.windows-saver .hadith-footer{font-size:.86cqw}
+.saver-footer{position:absolute;left:6.3%;right:6.3%;bottom:7%;display:flex;align-items:center;justify-content:space-between;gap:2cqw;font-size:.86cqw;letter-spacing:.12em;color:#ffffffb2;border-top:1px solid #ffffff35;padding-top:1.25cqw}
+.saver-footer span:last-child{letter-spacing:.02em}
+.divider-dot{padding:0 .5cqw;color:#e7ca9d}
+@media(max-aspect-ratio:4/3){.windows-saver .clock-panel{top:17%}.windows-saver .hadith-panel{top:54%;left:6.3%;right:6.3%;width:87.4%;height:27%}.saver-footer{bottom:4%}}
+
 </style>
 </head>
 <body>
 <div class="viewport">
-<main class="screen" aria-label="Home Screen Glass TV Kuala Terengganu">
+<main class="screen windows-saver" aria-label="Screensaver Islamik Windows 11 Kuala Terengganu">
   <div class="wallpaper"></div><div class="shade"></div>
 
-  <!-- KAWALAN: kedudukan dan saiz mengikut tangkap layar rujukan -->
-  <header class="topbar" aria-label="Kawalan TV">
-    <div class="right-controls">
-      <button class="control info-pill user-pill" id="profileButton" title="Profil utama">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="3.3" fill="currentColor" stroke="none"/><path d="M4.7 21v-2c0-3.7 3.3-6.3 7.3-6.3s7.3 2.6 7.3 6.3v2" fill="currentColor" stroke="none"/></svg>
-        <span>Main</span>
-      </button>
-      <button class="control info-pill wifi-pill" id="wifiButton" title="Maklumat Wi-Fi (pratonton)">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.4 8.6c5.8-4.9 13.4-4.9 19.2 0M5.7 12.2a9.6 9.6 0 0 1 12.6 0M9 16a4.7 4.7 0 0 1 6 0"/><circle cx="12" cy="19.5" r="1.3" fill="currentColor" stroke="none"/></svg>
-        <span id="wifi-label">Wi-Fi</span>
-      </button>
-      <button class="control circle" id="settingsButton" aria-label="Buka Settings" aria-expanded="false" title="Settings">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.4 2.2h5.2l.7 2.2 1.9.8 2.1-1 3.2 3.2-1.1 2.1.8 1.9 2.2.7v4.5l-2.2.7-.8 1.9 1.1 2.1-3.2 3.2-2.1-1-1.9.8-.7 2.2H9.4l-.7-2.2-1.9-.8-2.1 1-3.2-3.2 1.1-2.1-.8-1.9-2.2-.7v-4.5l2.2-.7.8-1.9-1.1-2.1 3.2-3.2 2.1 1 1.9-.8z" transform="translate(2 1) scale(.83)"/><circle cx="12" cy="12" r="3.5"/></svg>
-      </button>
-      <button class="control circle" id="powerButton" aria-label="Kuasa (pratonton sahaja)" title="Kuasa">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.4v10.2"/><path d="M6.9 5.4a9 9 0 1 0 10.2 0"/></svg>
-      </button>
-    </div>
-  </header>
-
-  <!-- KIRI: jam > lokasi/Hijri > 6 waktu solat > status -->
+  <div class="saver-overline" aria-hidden="true">KUALA TERENGGANU <span>·</span> WAKTU SOLAT & HADIS NAWAWI</div>
+  <!-- Jam, tarikh, dan e-Solat JAKIM -->
   <section class="clock-panel" aria-label="Jam, tarikh dan waktu solat">
     <div class="clock-line">
       <span id="clock">8:08</span>
@@ -140,35 +152,17 @@ button{font:inherit;cursor:pointer}
     <span class="visually-hidden" id="zone-detail">TRG01 · Kuala Terengganu, Marang dan Kuala Nerus</span>
   </section>
 
-  <!-- KANAN: kad kaca hadis, berputar setiap 5 minit -->
+  <!-- Kad Hadis Nawawi berputar setiap 5 minit -->
   <section class="hadith-panel" aria-label="Hadis 40 Imam Nawawi" aria-live="off">
     <div class="hadith-head"><span class="section-kicker">HADIS 40 IMAM NAWAWI</span><span class="round-tag" id="hadis-counter">01 / 42</span></div>
     <div class="hadith-body"><h1 id="hadis-title">Keutamaan Niat</h1><p id="hadis-text">Nilai sesuatu amalan bergantung pada niat. Lakukan kebaikan dengan ikhlas kerana Allah.</p></div>
     <div class="hadith-footer"><span>Ringkasan pengajaran · bukan matan penuh</span><div class="rotation-status"><span class="progress"><span class="progress-inner" id="progress-inner"></span></span><span id="rotate-countdown">05:00</span></div></div>
   </section>
 
-  <!-- BAWAH: tajuk dan dok empat tile dengan skala seperti gambar -->
-  <div class="dock-heading">National Geographic Photo of the Day</div>
-  <nav class="dock" aria-label="Aplikasi utama">
-    <button class="app youtube selected" data-name="YouTube" aria-label="YouTube (pratonton)"><span class="yt-mark"><span class="yt-triangle"></span></span><span>YouTube</span></button>
-    <button class="app disney" data-name="Disney+" aria-label="Disney+ (pratonton)"><span class="disney-arc"></span><span>Disney<span class="plus">+</span></span></button>
-    <button class="app appletv" data-name="Apple TV" aria-label="Apple TV (pratonton)"><svg viewBox="0 0 100 110" aria-hidden="true"><defs><linearGradient id="appleglow"><stop stop-color="#d7e8fa"/><stop offset=".5" stop-color="#f9f9fb"/><stop offset="1" stop-color="#bdadfc"/></linearGradient></defs><path d="M65 2c-1 10-7 18-16 22-1-9 5-19 16-22zM92 80c-7 16-15 26-24 26-8 0-11-5-22-5s-16 5-23 5C14 105 2 81 2 58 2 35 16 23 32 23c9 0 14 5 20 11-12 7-18 18-18 29 0 11 5 20 13 24z" fill="url(#appleglow)"/></svg><span>tv</span></button>
-    <button class="app browse" data-name="BrowseHere" aria-label="BrowseHere (pratonton)"><span class="browse-orbit"><i></i></span><span>BrowseHere</span></button>
-  </nav>
-  <!-- Sedikit baris kedua tampak di bawah, seperti gambar contoh. Hiasan sahaja. -->
-  <div class="secondary-peek" aria-hidden="true"><div class="peek p1"></div><div class="peek p2"></div><div class="peek p3"></div><div class="peek p4"></div></div>
-
-  <div class="toast" id="toast" role="status" hidden></div>
-  <section class="settings-overlay" id="settings" hidden aria-label="Tetapan pratonton">
-    <div class="settings-sheet">
-      <div class="settings-title"><div><div class="overline">GLASS TV · KUALA TERENGGANU</div><h2>Tetapan paparan</h2></div><button class="x-button" id="settingsClose" aria-label="Tutup tetapan">×</button></div>
-      <div class="setting-row"><div><strong>Zon waktu solat</strong><small>e-Solat JAKIM · Kuala Terengganu, Marang dan Kuala Nerus</small></div><span class="value-pill">TRG01</span></div>
-      <div class="setting-row"><div><strong>Kad Hadis 40 Imam Nawawi</strong><small>42 ringkasan pengajaran · bertukar secara automatik</small></div><span class="value-pill">5 MIN</span></div>
-      <div class="setting-row"><div><strong>Kemas kini waktu JAKIM</strong><small id="source-settings">Mengambil waktu sebenar daripada e-Solat JAKIM</small></div><button id="refreshButton" class="action-btn">Segarkan</button></div>
-      <div class="setting-row"><div><strong>Pratonton hadis berikutnya</strong><small>Uji pertukaran tanpa menunggu 5 minit</small></div><button id="nextHadisButton" class="action-btn">Hadis →</button></div>
-      <div class="settings-note">Ini ialah UI web prototaip Glass TV, bukan APK Home sebenar. Dalam versi web, butang Wi-Fi dan Kuasa tidak boleh mengawal sistem Android TV. Waktu solat hanya boleh dipaparkan sebagai data sebenar setelah sambungan API berjaya.</div>
-    </div>
-  </section>
+  <footer class="saver-footer" aria-label="Maklumat screensaver">
+    <span>GLASS TV <span class="divider-dot">·</span> ISLAMIC SCREENSAVER</span>
+    <span>Gerakkan tetikus atau tekan kekunci untuk keluar</span>
+  </footer>
 </main>
 </div>
 <script>/* Ringkasan pengajaran, BUKAN petikan atau terjemahan lengkap matan hadis.
@@ -273,7 +267,6 @@ function updateHadisProgress(){
   $('rotate-countdown').textContent=String(Math.floor(left/60)).padStart(2,'0')+':'+String(left%60).padStart(2,'0');
   $('progress-inner').style.width=(100-(elapsed/PERIOD_MS)*100)+'%';
 }
-function announce(str){const el=$('toast');el.textContent=str;el.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.hidden=true,4000);}
 function timeVal(value){
   if(value===undefined||value===null)return null;
   if(typeof value==='number' && value>1e9) return new Intl.DateTimeFormat('en-GB',{timeZone:TZ,hourCycle:'h23',hour:'2-digit',minute:'2-digit'}).format(new Date(value*(value<1e12?1000:1)));
@@ -352,35 +345,6 @@ async function refreshPrayers(){
   else{status('Waktu belum tersedia','bad');wipeTimes();$('sync-detail').textContent='Sambungan gagal. Tiada waktu rekaan dipaparkan. Klik Settings → Segarkan.';}
   console.info('Sumber waktu solat gagal:',problems);
 }
-function openSettings(){const el=$('settings');el.hidden=false;$('settingsButton').setAttribute('aria-expanded','true');$('settingsClose').focus();}
-function closeSettings(){$('settings').hidden=true;$('settingsButton').setAttribute('aria-expanded','false');$('settingsButton').focus();}
-$('settingsButton').addEventListener('click',openSettings);
-$('settingsClose').addEventListener('click',closeSettings);
-$('settings').addEventListener('click',e=>{if(e.target===$('settings'))closeSettings();});
-$('refreshButton').addEventListener('click',()=>{refreshPrayers();announce(preview?'Pratonton: data contoh sedang ditunjukkan':'Permintaan jadual JAKIM dihantar');});
-$('nextHadisButton').addEventListener('click',()=>{showHadis(hadisIndex+1);hadisStarted=Date.now();updateHadisProgress();closeSettings();});
-$('profileButton').addEventListener('click',()=>announce('Profil: Main · reka bentuk UI sahaja.'));
-$('wifiButton').addEventListener('click',()=>{if(window.GlassTVAndroid)window.GlassTVAndroid.openWifi();else announce('Wi-Fi contoh dalam pelayar');});
-$('powerButton').addEventListener('click',()=>announce('Butang Power tidak mengubah kuasa TV dalam versi ujian.'));
-for(const btn of document.querySelectorAll('.app')){
-  btn.addEventListener('click',()=>{if(window.GlassTVAndroid)window.GlassTVAndroid.openApp(btn.dataset.name);else announce(btn.dataset.name+': pratonton sahaja.');});
-  btn.addEventListener('focus',()=>{for(const item of document.querySelectorAll('.app'))item.classList.remove('selected');btn.classList.add('selected');});
-}
-// D-pad-like navigation for keyboard/TV browsers. No system keys are intercepted.
-const tvControls=[...document.querySelectorAll('.right-controls button'),...document.querySelectorAll('.dock button')];
-document.addEventListener('keydown',e=>{
-  if(!$('settings').hidden||!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;
-  const focused=document.activeElement;
-  const current=tvControls.includes(focused)?focused:document.querySelector('.app.selected');
-  if(!current)return;
-  const a=current.getBoundingClientRect(),cx=a.left+a.width/2,cy=a.top+a.height/2;
-  const matches=tvControls.filter(el=>el!==current).map(el=>{const b=el.getBoundingClientRect(),dx=b.left+b.width/2-cx,dy=b.top+b.height/2-cy;
-    const acceptable=(e.key==='ArrowLeft'&&dx<0)||(e.key==='ArrowRight'&&dx>0)||(e.key==='ArrowUp'&&dy<0)||(e.key==='ArrowDown'&&dy>0);
-    return {el,score:acceptable?((e.key==='ArrowUp'||e.key==='ArrowDown')?Math.abs(dy)+Math.abs(dx)*.7:Math.abs(dx)+Math.abs(dy)*.7):Infinity};
-  }).filter(x=>Number.isFinite(x.score)).sort((a,b)=>a.score-b.score);
-  if(matches.length){e.preventDefault();matches[0].el.focus();}
-});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('settings').hidden)closeSettings();});
 window.onNativePrayer=function(raw){
   try{
     const result=JSON.parse(raw);
