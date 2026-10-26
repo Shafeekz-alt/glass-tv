@@ -21,7 +21,7 @@ internal static class Program
         var option = args.FirstOrDefault()?.ToLowerInvariant() ?? "/s";
         if (option.StartsWith("/c") || option.StartsWith("-c"))
         {
-            MessageBox.Show("Glass TV Kuala Terengganu\n\nZon solat: TRG01 (e-Solat JAKIM)\nHadis: 42 ringkasan, bertukar setiap 5 minit\n\nTiada tetapan tambahan. Butang dan ikon aplikasi ialah hiasan apabila screensaver aktif.",
+            MessageBox.Show("Glass TV Kuala Terengganu\n\nZon solat: TRG01 (e-Solat JAKIM)\nHadis: 42 ringkasan, bertukar setiap 5 minit\n\nPaparan screensaver tanpa butang atau ikon aplikasi. Gerakkan tetikus atau tekan kekunci untuk keluar.",
                 "Glass TV KT - Tetapan", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return;
         }
