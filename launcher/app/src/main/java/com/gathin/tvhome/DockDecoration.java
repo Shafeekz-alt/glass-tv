@@ -2,6 +2,7 @@ package com.gathin.tvhome;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.View;
@@ -24,6 +25,7 @@ public class DockDecoration extends RecyclerView.ItemDecoration {
     private final Backdrop.Fill blur = new Backdrop.Fill();
 
     private final RectF rect = new RectF();
+    private final Path trayClip = new Path();
     /** The tray as last drawn, in the grid's coordinates: where the focus shape shows on it. */
     final RectF area = new RectF();
 
@@ -83,7 +85,9 @@ public class DockDecoration extends RecyclerView.ItemDecoration {
             parent.getLocationInWindow(at);
             glider.getLocationInWindow(gliderAt);
             c.save();
-            c.clipRect(rect);
+            trayClip.rewind();
+            trayClip.addRoundRect(rect, radius, radius, Path.Direction.CW);
+            c.clipPath(trayClip);
             glider.drawShape(c, gliderAt[0] - at[0], gliderAt[1] - at[1], parent);
             c.restore();
         }
