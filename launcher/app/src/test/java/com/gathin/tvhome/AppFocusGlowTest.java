@@ -58,8 +58,9 @@ public class AppFocusGlowTest {
         assertEquals("Outer corner must stay transparent", 0,
                 Color.alpha(bitmap.getPixel(28, 28)));
         int previous = 255;
+        // Start outside the curved border; its inside is deliberately transparent now.
         for (int step = 0; step <= 18; step++) {
-            int alpha = Color.alpha(bitmap.getPixel(55 - step, 55 - step));
+            int alpha = Color.alpha(bitmap.getPixel(54 - step, 54 - step));
             assertTrue("Corner fade must not form rings", alpha <= previous + 1);
             previous = alpha;
         }
