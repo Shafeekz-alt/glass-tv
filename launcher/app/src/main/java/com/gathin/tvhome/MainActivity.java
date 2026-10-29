@@ -174,7 +174,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     /** Decodes the next picture off the main thread, so a switch never stutters the D-pad animations. */
     private final java.util.concurrent.ExecutorService wallDecoder = java.util.concurrent.Executors.newSingleThreadExecutor();
     private long wallShownAt;
-    private android.widget.ImageView wallView;
+    private KenBurnsView wallView;
+    private boolean wallpaperActive;
     private android.graphics.Bitmap wallBitmap;
     /** Settings kept for the places refresh, which runs after onCreate. */
     private Config config;
@@ -339,13 +340,6 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         Backdrop.watch(grid);
         setUpGlider();
         holdFirstFrame();
-        for (int i = 0; i < grid.getItemDecorationCount(); i++) {
-            if (grid.getItemDecorationAt(i) instanceof DockDecoration) {
-                ((DockDecoration) grid.getItemDecorationAt(i)).setGlider(glider);
-            }
-        }
-        // The grid only shows the shape on the tray.
-        glider.addCompanion(grid, tray.area);
         for (int id : new int[]{R.id.btnInputs, R.id.btnWifi, R.id.btnSettings}) {
             View pill = findViewById(id);
             pill.setBackground(new GlassDrawable(pill, 21 * density, density, glider));
@@ -511,11 +505,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private void setWallpaper(android.graphics.Bitmap bmp, boolean fade, android.graphics.Bitmap blur) {
         if (bmp == null) return;
         if (wallView == null) {
-            wallView = new android.widget.ImageView(this);
-            wallView.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+            wallView = new KenBurnsView(this, config.kenBurns && !reducedMotion);
             // Photos are bright: dim them so the clock, names and tiles stay readable.
             if (placesMode) wallView.setColorFilter(0xFF7A7A7A, android.graphics.PorterDuff.Mode.MULTIPLY);
             root.addView(wallView, 0, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            wallView.setMotionRunning(wallpaperActive);
         }
         android.graphics.Bitmap old = wallBitmap;
         wallBitmap = bmp;
@@ -585,6 +579,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private final Runnable wallTick = new Runnable() {
         @Override
         public void run() {
+            if (!wallpaperActive) return;
             if (wallpapers.size() >= 2) showNextWallpaper(true);
             handler.postDelayed(this, wallpaperIntervalMs);
         }
@@ -623,7 +618,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         long waited = android.os.SystemClock.elapsedRealtime() - wallShownAt;
         // A picture that fell due while you were in an app waits a few seconds: decoding, blurring
         // and fading it the moment you come back competed with Home for the TV's slow CPU.
-        handler.postDelayed(wallTick, Math.max(RETURN_SETTLE_MS, wallpaperIntervalMs - waited));
+        handler.postDelayed(wallTick, Math.max(Math.min(RETURN_SETTLE_MS, wallpaperIntervalMs), wallpaperIntervalMs - waited));
     }
 
     /**
@@ -659,6 +654,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onResume() {
         super.onResume();
+        wallpaperActive = true;
+        if (wallView != null) wallView.setMotionRunning(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(packageReceiver, packageFilter, Context.RECEIVER_NOT_EXPORTED);
         } else {
@@ -757,6 +754,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onPause() {
         super.onPause();
+        wallpaperActive = false;
+        if (wallView != null) wallView.setMotionRunning(false);
         unregisterReceiver(packageReceiver);
         handler.removeCallbacks(minuteTick);
         handler.removeCallbacks(wallTick);
@@ -786,6 +785,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (wallView != null) wallView.release();
         wallDecoder.shutdownNow();
         ConnectivityManager cm = getSystemService(ConnectivityManager.class);
         TvInputManager tim = (TvInputManager) getSystemService(TV_INPUT_SERVICE);
@@ -825,37 +825,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         Rect r = tileRect;
         r.set(0, 0, card.getWidth(), card.getHeight());
         root.offsetDescendantRectToMyCoords(card, r);
-        float pad = 6f * density;        // matches GlassView's glow inset
-        float w = card.getWidth() * AppAdapter.FOCUS_SCALE + 2 * pad;
-        float h = card.getHeight() * AppAdapter.FOCUS_SCALE + 2 * pad;
-        float x = r.exactCenterX() - w / 2f;
-        float y = r.exactCenterY() - h / 2f;
-
-        ViewGroup.LayoutParams lp = glass.getLayoutParams();
-        if (lp.width != (int) w || lp.height != (int) h) {
-            lp.width = (int) w;
-            lp.height = (int) h;
-            glass.setLayoutParams(lp);
-            // The rim is drawn inset by pad, right on the zoomed tile, so its corners use the tile's radius as is.
-            glass.setRadius(AppAdapter.cornerRadius(card.getWidth(), density) * AppAdapter.FOCUS_SCALE);
-        }
-        glassTargetX = x;
-        glassTargetY = y;
-        // Exactly the zoomed card, behind it: at rest the app hides it completely, so it never lies
-        // over an app and only shows while it travels between places.
-        float cardRadius = AppAdapter.cornerRadius(card.getWidth(), density) * AppAdapter.FOCUS_SCALE;
-        if (gliderOnPill) {
-            // Down from the top menu it travels dark, and turns to glass once it lands, unseen behind
-            // the app.
-            glider.moveTo(x + pad, y + pad, x + w - pad, y + h - pad, cardRadius);
-            glider.onArrive(() -> {
-                if (!gliderOnPill) glider.setStyle(Glider.GLASS);
-            });
-        } else {
-            // From app to app it is a pane of glass gliding behind them.
-            glider.setStyle(Glider.GLASS);
-            glider.moveTo(x + pad, y + pad, x + w - pad, y + h - pad, cardRadius);
-        }
+        float pad = 6f * density;
+        ((AppTileView) card).setGlowColor(adapter.ambientColorAt(position));
+        // App focus belongs to the tile itself. A separate spring pane can lag behind the artwork
+        // and leave exposed glass/shadow blocks, especially while the card is still zooming.
+        glider.hideNow();
         gliderOnPill = false;
         glassShown = true;
         View item = (View) card.getParent();

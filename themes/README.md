@@ -39,8 +39,9 @@ is ignored, and a file that doesn't parse is ignored as a whole, so a theme can 
 | `show_live_tv` | bool | The Live TV row in the Inputs menu; `false` leaves only the HDMI and AV inputs |
 | `background_color` | `#RRGGBB` | Colour behind everything; black by default |
 | `wallpaper` | bool | Show `wallpaper.jpg` from the theme folder (`true`), or ignore it (`false`) |
-| `wallpaper_seconds` | 5 to 86400 | Seconds between pictures; when set, it wins over `wallpaper_minutes` |
-| `wallpaper_minutes` | 0 to 1440 | Minutes between pictures when the theme has a `wallpapers/` folder; 0 changes only when Home starts. Default 30 |
+| `wallpaper_seconds` | 5 to 86400 | Seconds between pictures, including Places; default 5. When set, it wins over `wallpaper_minutes` |
+| `wallpaper_minutes` | 0 to 1440 | Optional interval in minutes instead; 0 changes only when Home starts |
+| `ken_burns` | bool | Gentle wallpaper pan and zoom, on by default. `false` keeps the picture still. Also disabled by `reduced_motion` |
 | `cache_clean_days` | 0 to 90 | Days between clearing the TV's app caches, which the TV does itself (default 15); `0` turns it off. See [docs/cache-clean.md](../docs/cache-clean.md) |
 | `places` | bool | Pictures of places to visit (Bing's daily images, no key), renewed weekly with last week's deleted, each named with its country and a few lines about it; pictures with people in them are skipped. On by default, and they replace the theme's own pictures. `false`: the theme's own pictures, and the launcher never goes online |
 
@@ -49,6 +50,14 @@ is ignored, and a file that doesn't parse is ignored as a whole, so a theme can 
 `wallpaper.jpg` is drawn full screen behind the launcher, centre-cropped. Keep it dark, 1920×1080 and
 under about 300 KB: the text, the hero name and the dock band are designed for black, and a 1 GB TV
 decodes the picture into memory on every Home start. Pictures larger than the screen are downsampled.
+
+Pictures change every five seconds by default, with a soft cross-fade. A slow Ken Burns pan and zoom
+continues through the fade without jumping and pauses while another app is open. Both Places and
+theme wallpapers use it. With only one picture, the pan and zoom repeats without changing the picture.
+
+```json
+{ "wallpaper_seconds": 5, "ken_burns": true }
+```
 
 ## Reduced motion
 

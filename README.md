@@ -21,8 +21,9 @@ every week.
 - **Glass, like Apple's.** The dock's tray, the top-bar buttons and the menus show the picture behind them
   softened, with a shine along their edges. Android 10 has no live blur, so the picture is blurred once each
   time it changes and the glass draws its patch of it.
-- **One selection that glides.** Between apps it is a pane of glass with the app's shadow under it; on the top
-  bar and in the menus it is dark. It glides and changes shape from one to the next, never jumps.
+- **Clear app selection.** A gradient border and soft glow in the selected app's colours stay attached
+  to its rounded artwork while it zooms, scrolls or moves, in both the dock and grid. Top-bar buttons
+  and menus keep their dark, gliding selection.
 - **Places to visit that renew themselves.** Once a week the TV takes the pictures Bing has shown on its home
   page over the past days — landmarks, landscapes, wildlife — deletes last week's and rotates through them,
   dimmed so the clock and tiles stay readable. The shelf above the dock names each one, its country and a few
@@ -42,6 +43,8 @@ every week.
   date beneath, drifting a little each minute so nothing burns in.
 - **Rows feather out under the top bar** instead of being cut off when you scroll, and the Wi-Fi / Ethernet
   button can be hidden (`show_network_pill`).
+- **Moving wallpapers.** A gentle Ken Burns pan and zoom with a new picture every five seconds by default,
+  cross-fading without a jump. Motion pauses inside other apps; reduced motion keeps the picture still.
 - **Rotating wallpapers of your own** instead, with `"places": false`: put pictures in a theme's `wallpapers/`
   folder and choose how often they change, down to every 5 seconds. Each picture is decoded in the background
   and cross-faded.
@@ -102,7 +105,8 @@ the launcher offline, make a theme folder with a `config.json` like this and pus
 ```json
 {
   "places": false,
-  "wallpaper_seconds": 15,
+  "wallpaper_seconds": 5,
+  "ken_burns": true,
   "show_network_pill": false
 }
 ```

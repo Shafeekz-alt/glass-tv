@@ -63,7 +63,7 @@ final class Glider extends View {
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Backdrop.Fill glass = new Backdrop.Fill();
     private final Paint veil = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final GlassRim rim;
+    private final AppFocusGlow appGlow;
     private final android.graphics.RectF shape = new android.graphics.RectF();
     private int style = DARK;
     private boolean paneHidden;
@@ -100,7 +100,7 @@ final class Glider extends View {
         this.reducedMotion = reducedMotion;
         float density = context.getResources().getDisplayMetrics().density;
         veil.setColor(0x14FFFFFF);
-        rim = new GlassRim(1.5f * density, 0xD9FFFFFF, 0x1AFFFFFF);
+        appGlow = new AppFocusGlow(density);
         shadowBlur = 22f * density;
         shadowDrop = 8f * density;
         Backdrop.watch(this);
@@ -214,6 +214,12 @@ final class Glider extends View {
         changed();
     }
 
+    /** Use the same cached artwork colour as the room's ambient light. */
+    void setAppColor(int color) {
+        appGlow.setColor(color);
+        changed();
+    }
+
     /** Switches look at once; there is no blend between the two. The shadow eases in with the glass. */
     void setStyle(int style) {
         if (this.style == style) return;
@@ -291,14 +297,11 @@ final class Glider extends View {
         // shining edge.
         drawShadow(canvas, r);
         if (paneHidden) return;
+        appGlow.drawHalo(canvas, shape, r, opacity);
         glass.draw(canvas, canvasOwner, shape, r, opacity);
         veil.setAlpha(Math.round(0x14 * opacity));
         canvas.drawRoundRect(shape, r, r, veil);
-        float half = rim.paint.getStrokeWidth() / 2f;
-        shape.inset(half, half);
-        rim.fit(shape);
-        rim.paint.setAlpha(Math.round(255 * opacity));
-        canvas.drawRoundRect(shape, r - half, r - half, rim.paint);
+        appGlow.drawRim(canvas, shape, r, opacity);
     }
 
     private void drawShadow(Canvas canvas, float radius) {
@@ -354,7 +357,7 @@ final class Glider extends View {
         if (companions.isEmpty()) return;
         dirty.set(drawn);
         if (isShowing()) {
-            float reach = 2f * shadowBlur + shadowDrop + 2f;
+            float reach = Math.max(2f * shadowBlur + shadowDrop + 2f, appGlow.reach());
             drawn.set(edges[LEFT] - reach, edges[TOP] + yShift - reach,
                     edges[RIGHT] + reach, edges[BOTTOM] + yShift + reach);
             dirty.union(drawn);

@@ -10,7 +10,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Outline;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -20,7 +19,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewOutlineProvider;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
@@ -312,6 +310,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
         h.name.setAlpha(focused ? 1f : 0f);
         h.card.setScaleX(focused ? FOCUS_SCALE : 1f);
         h.card.setScaleY(focused ? FOCUS_SCALE : 1f);
+        if (focused) ((AppTileView) h.card).setGlowColor(ambientColorAt(position));
         if (e.banner != null) {
             h.banner.setImageDrawable(e.banner);
             h.banner.setVisibility(View.VISIBLE);
@@ -507,15 +506,6 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
             this.reducedMotion = reducedMotion;
 
             final float density = v.getResources().getDisplayMetrics().density;
-            card.setOutlineProvider(new ViewOutlineProvider() {
-                @Override
-                public void getOutline(View view, Outline outline) {
-                    // 16dp at the design width, scaled down with the tile so small tiles keep the same shape.
-                    outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), cornerRadius(view.getWidth(), density));
-                }
-            });
-            card.setClipToOutline(true);
-
             card.setOnKeyListener((view, keyCode, event) -> {
                 if (event.getAction() != KeyEvent.ACTION_DOWN) return false;
                 if (keyCode != KeyEvent.KEYCODE_DPAD_UP && keyCode != KeyEvent.KEYCODE_DPAD_DOWN
@@ -533,14 +523,12 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
                     view.animate().scaleX(s).scaleY(s)
                             .setDuration(focused ? 120 : 80)
                             .setInterpolator(ZOOM_REDUCED)
-                            .withLayer()
                             .start();
                     name.animate().alpha(focused ? 1f : 0f).setDuration(100).start();
                 } else {
                     view.animate().scaleX(s).scaleY(s)
                             .setDuration(focused ? 260 : 180)
                             .setInterpolator(focused ? ZOOM_IN : ZOOM_OUT)
-                            .withLayer()
                             .start();
                     name.animate().alpha(focused ? 1f : 0f)
                             .translationY(focused ? density * 4f : -density * 6f)
