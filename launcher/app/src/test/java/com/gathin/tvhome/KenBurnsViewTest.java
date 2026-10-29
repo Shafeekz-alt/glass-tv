@@ -1,12 +1,10 @@
 package com.gathin.tvhome;
 
 import static org.junit.Assert.*;
-import static org.robolectric.Shadows.shadowOf;
 
 import android.animation.ValueAnimator;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
-import android.os.Looper;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,18 +14,12 @@ import org.robolectric.annotation.Config;
 import org.robolectric.annotation.LooperMode;
 import org.robolectric.util.ReflectionHelpers;
 
-import java.time.Duration;
-
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 28)
 @LooperMode(LooperMode.Mode.PAUSED)
 public class KenBurnsViewTest {
     private KenBurnsView view(boolean enabled) {
         KenBurnsView view = new KenBurnsView(RuntimeEnvironment.getApplication(), enabled);
-        // ShadowValueAnimator rewrites INFINITE to one repeat. Restore Android's real repeat
-        // count so pause/resume and coverage checks can exercise an actual continuous loop.
-        ValueAnimator animator = ReflectionHelpers.getField(view, "motion");
-        if (animator != null) ReflectionHelpers.setField(animator, "mRepeatCount", ValueAnimator.INFINITE);
         view.layout(0, 0, 1920, 1080);
         return view;
     }
@@ -38,8 +30,13 @@ public class KenBurnsViewTest {
         try {
             float initialZoom = view.getScaleX();
             float initialPivot = view.getPivotX();
-            for (int i = 0; i < 30; i++) {
-                shadowOf(Looper.getMainLooper()).idleFor(Duration.ofSeconds(1));
+            ValueAnimator animator = ReflectionHelpers.getField(view, "motion");
+            // Seek bounded frames in both directions. Robolectric caps INFINITE at one repeat;
+            // forcing an endless real animator makes its virtual frame scheduler fail to drain.
+            assertEquals(ValueAnimator.INFINITE,
+                    org.robolectric.Shadows.shadowOf(animator).getActualRepeatCount());
+            for (int i = 0; i < 40; i++) {
+                animator.setCurrentPlayTime(i * 500L);
                 RectF covered = new RectF(0, 0, 1920, 1080);
                 view.getMatrix().mapRect(covered);
                 assertTrue("No exposed left/top edges", covered.left <= 0 && covered.top <= 0);
@@ -56,18 +53,18 @@ public class KenBurnsViewTest {
         KenBurnsView view = view(true);
         view.setMotionRunning(true);
         try {
-            shadowOf(Looper.getMainLooper()).idleFor(Duration.ofSeconds(3));
+            ValueAnimator animator = ReflectionHelpers.getField(view, "motion");
+            animator.setCurrentPlayTime(3_000);
             view.setMotionRunning(false);
             float paused = view.getScaleX();
             assertFalse(view.isMotionRunning());
-            shadowOf(Looper.getMainLooper()).idleFor(Duration.ofSeconds(10));
+            assertTrue(animator.isPaused());
             assertEquals(paused, view.getScaleX(), 0.0001f);
             view.setMotionRunning(true);
             assertEquals("Resuming must not jump back", paused, view.getScaleX(), 0.0001f);
-            shadowOf(Looper.getMainLooper()).idleFor(Duration.ofSeconds(2));
-            ValueAnimator animator = ReflectionHelpers.getField(view, "motion");
             assertTrue("Animation after resume: started=" + animator.isStarted()
                     + " paused=" + animator.isPaused(), view.isMotionRunning());
+            animator.setCurrentPlayTime(5_000);
             assertNotEquals(paused, view.getScaleX(), 0.001f);
         } finally {
             view.release();
@@ -79,7 +76,8 @@ public class KenBurnsViewTest {
         KenBurnsView view = view(true);
         view.setMotionRunning(true);
         try {
-            shadowOf(Looper.getMainLooper()).idleFor(Duration.ofSeconds(5));
+            ValueAnimator animator = ReflectionHelpers.getField(view, "motion");
+            animator.setCurrentPlayTime(5_000);
             float scale = view.getScaleX(), pivot = view.getPivotX();
             view.setImageBitmap(Bitmap.createBitmap(32, 18, Bitmap.Config.RGB_565));
             assertEquals(scale, view.getScaleX(), 0f);
@@ -92,7 +90,6 @@ public class KenBurnsViewTest {
     @Test public void disabledMotionLeavesTheWallpaperStill() {
         KenBurnsView view = view(false);
         view.setMotionRunning(true);
-        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofSeconds(15));
         assertFalse(view.isMotionRunning());
         assertEquals(1f, view.getScaleX(), 0f);
         assertEquals(1f, view.getScaleY(), 0f);
