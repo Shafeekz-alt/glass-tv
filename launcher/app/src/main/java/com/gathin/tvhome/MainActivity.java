@@ -174,7 +174,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     /** Decodes the next picture off the main thread, so a switch never stutters the D-pad animations. */
     private final java.util.concurrent.ExecutorService wallDecoder = java.util.concurrent.Executors.newSingleThreadExecutor();
     private long wallShownAt;
-    private android.widget.ImageView wallView;
+    private KenBurnsView wallView;
+    private boolean wallpaperActive;
     private android.graphics.Bitmap wallBitmap;
     /** Settings kept for the places refresh, which runs after onCreate. */
     private Config config;
@@ -504,11 +505,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private void setWallpaper(android.graphics.Bitmap bmp, boolean fade, android.graphics.Bitmap blur) {
         if (bmp == null) return;
         if (wallView == null) {
-            wallView = new android.widget.ImageView(this);
-            wallView.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+            wallView = new KenBurnsView(this, config.kenBurns && !reducedMotion);
             // Photos are bright: dim them so the clock, names and tiles stay readable.
             if (placesMode) wallView.setColorFilter(0xFF7A7A7A, android.graphics.PorterDuff.Mode.MULTIPLY);
             root.addView(wallView, 0, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            wallView.setMotionRunning(wallpaperActive);
         }
         android.graphics.Bitmap old = wallBitmap;
         wallBitmap = bmp;
@@ -578,6 +579,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private final Runnable wallTick = new Runnable() {
         @Override
         public void run() {
+            if (!wallpaperActive) return;
             if (wallpapers.size() >= 2) showNextWallpaper(true);
             handler.postDelayed(this, wallpaperIntervalMs);
         }
@@ -616,7 +618,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         long waited = android.os.SystemClock.elapsedRealtime() - wallShownAt;
         // A picture that fell due while you were in an app waits a few seconds: decoding, blurring
         // and fading it the moment you come back competed with Home for the TV's slow CPU.
-        handler.postDelayed(wallTick, Math.max(RETURN_SETTLE_MS, wallpaperIntervalMs - waited));
+        handler.postDelayed(wallTick, Math.max(Math.min(RETURN_SETTLE_MS, wallpaperIntervalMs), wallpaperIntervalMs - waited));
     }
 
     /**
@@ -652,6 +654,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onResume() {
         super.onResume();
+        wallpaperActive = true;
+        if (wallView != null) wallView.setMotionRunning(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(packageReceiver, packageFilter, Context.RECEIVER_NOT_EXPORTED);
         } else {
@@ -750,6 +754,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onPause() {
         super.onPause();
+        wallpaperActive = false;
+        if (wallView != null) wallView.setMotionRunning(false);
         unregisterReceiver(packageReceiver);
         handler.removeCallbacks(minuteTick);
         handler.removeCallbacks(wallTick);
@@ -779,6 +785,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (wallView != null) wallView.release();
         wallDecoder.shutdownNow();
         ConnectivityManager cm = getSystemService(ConnectivityManager.class);
         TvInputManager tim = (TvInputManager) getSystemService(TV_INPUT_SERVICE);

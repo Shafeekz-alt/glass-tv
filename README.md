@@ -43,6 +43,8 @@ every week.
   date beneath, drifting a little each minute so nothing burns in.
 - **Rows feather out under the top bar** instead of being cut off when you scroll, and the Wi-Fi / Ethernet
   button can be hidden (`show_network_pill`).
+- **Moving wallpapers.** A gentle Ken Burns pan and zoom with a new picture every five seconds by default,
+  cross-fading without a jump. Motion pauses inside other apps; reduced motion keeps the picture still.
 - **Rotating wallpapers of your own** instead, with `"places": false`: put pictures in a theme's `wallpapers/`
   folder and choose how often they change, down to every 5 seconds. Each picture is decoded in the background
   and cross-faded.
@@ -103,7 +105,8 @@ the launcher offline, make a theme folder with a `config.json` like this and pus
 ```json
 {
   "places": false,
-  "wallpaper_seconds": 15,
+  "wallpaper_seconds": 5,
+  "ken_burns": true,
   "show_network_pill": false
 }
 ```
