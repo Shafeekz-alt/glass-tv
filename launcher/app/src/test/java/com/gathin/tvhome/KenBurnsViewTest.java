@@ -3,6 +3,7 @@ package com.gathin.tvhome;
 import static org.junit.Assert.*;
 import static org.robolectric.Shadows.shadowOf;
 
+import android.animation.ValueAnimator;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.os.Looper;
@@ -13,6 +14,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.annotation.LooperMode;
+import org.robolectric.util.ReflectionHelpers;
 
 import java.time.Duration;
 
@@ -22,6 +24,10 @@ import java.time.Duration;
 public class KenBurnsViewTest {
     private KenBurnsView view(boolean enabled) {
         KenBurnsView view = new KenBurnsView(RuntimeEnvironment.getApplication(), enabled);
+        // ShadowValueAnimator rewrites INFINITE to one repeat. Restore Android's real repeat
+        // count so pause/resume and coverage checks can exercise an actual continuous loop.
+        ValueAnimator animator = ReflectionHelpers.getField(view, "motion");
+        if (animator != null) ReflectionHelpers.setField(animator, "mRepeatCount", ValueAnimator.INFINITE);
         view.layout(0, 0, 1920, 1080);
         return view;
     }
@@ -59,7 +65,9 @@ public class KenBurnsViewTest {
             view.setMotionRunning(true);
             assertEquals("Resuming must not jump back", paused, view.getScaleX(), 0.0001f);
             shadowOf(Looper.getMainLooper()).idleFor(Duration.ofSeconds(2));
-            assertTrue(view.isMotionRunning());
+            ValueAnimator animator = ReflectionHelpers.getField(view, "motion");
+            assertTrue("Animation after resume: started=" + animator.isStarted()
+                    + " paused=" + animator.isPaused(), view.isMotionRunning());
             assertNotEquals(paused, view.getScaleX(), 0.001f);
         } finally {
             view.release();
