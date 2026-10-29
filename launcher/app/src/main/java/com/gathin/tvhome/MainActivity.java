@@ -841,20 +841,20 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         }
         glassTargetX = x;
         glassTargetY = y;
-        // Exactly the zoomed card, behind it: at rest the app hides it completely, so it never lies
-        // over an app and only shows while it travels between places.
-        float cardRadius = AppAdapter.cornerRadius(card.getWidth(), density) * AppAdapter.FOCUS_SCALE;
+        // Extend beyond the zoomed artwork so selection remains visible after the glide stops.
+        float frame = AppFocusGlow.FRAME_DP * density;
+        float cardRadius = AppAdapter.cornerRadius(card.getWidth(), density) * AppAdapter.FOCUS_SCALE + frame;
+        glider.setAppColor(adapter.ambientColorAt(position));
         if (gliderOnPill) {
-            // Down from the top menu it travels dark, and turns to glass once it lands, unseen behind
-            // the app.
-            glider.moveTo(x + pad, y + pad, x + w - pad, y + h - pad, cardRadius);
+            // Down from the top menu it travels dark, then reveals the app's coloured frame.
+            glider.moveTo(x + pad - frame, y + pad - frame, x + w - pad + frame, y + h - pad + frame, cardRadius);
             glider.onArrive(() -> {
                 if (!gliderOnPill) glider.setStyle(Glider.GLASS);
             });
         } else {
             // From app to app it is a pane of glass gliding behind them.
             glider.setStyle(Glider.GLASS);
-            glider.moveTo(x + pad, y + pad, x + w - pad, y + h - pad, cardRadius);
+            glider.moveTo(x + pad - frame, y + pad - frame, x + w - pad + frame, y + h - pad + frame, cardRadius);
         }
         gliderOnPill = false;
         glassShown = true;

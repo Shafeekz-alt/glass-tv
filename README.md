@@ -21,7 +21,8 @@ every week.
 - **Glass, like Apple's.** The dock's tray, the top-bar buttons and the menus show the picture behind them
   softened, with a shine along their edges. Android 10 has no live blur, so the picture is blurred once each
   time it changes and the glass draws its patch of it.
-- **One selection that glides.** Between apps it is a pane of glass with the app's shadow under it; on the top
+- **One selection that glides.** A bright gradient border and soft glow in the selected app's colours stay
+  visible around its artwork in both the dock and grid. Between apps it is a pane of glass with the app's shadow under it; on the top
   bar and in the menus it is dark. It glides and changes shape from one to the next, never jumps.
 - **Places to visit that renew themselves.** Once a week the TV takes the pictures Bing has shown on its home
   page over the past days — landmarks, landscapes, wildlife — deletes last week's and rotates through them,
