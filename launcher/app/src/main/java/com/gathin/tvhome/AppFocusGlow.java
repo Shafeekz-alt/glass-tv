@@ -5,19 +5,21 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.RadialGradient;
 import android.graphics.RectF;
 import android.graphics.Shader;
 
 /** A single app-coloured rim with a continuous halo, without a live blur or bitmap. */
 final class AppFocusGlow {
-    static final float FRAME_DP = 3f;
+    static final float FRAME_DP = 2f;
     private final float density;
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     // Adjacent rectangular patches share exact edges. Antialiasing their boundaries would leave
     // hairline seams; the shaders themselves provide the soft, rounded outer boundary.
     private final Paint haloPaint = new Paint(Paint.DITHER_FLAG);
     private final RectF band = new RectF();
+    private final Path inside = new Path();
     private final Matrix matrix = new Matrix();
     private final float[] hsv = new float[3];
     private LinearGradient gradient;
@@ -62,7 +64,7 @@ final class AppFocusGlow {
         return 20f * density;
     }
 
-    /** Paint before the glass fill: only the halo outside it should be visible. */
+    /** A hollow halo: corner gradients must never paint solid blocks inside the border. */
     void drawHalo(Canvas canvas, RectF bounds, float radius, float opacity) {
         if (opacity <= 0f) return;
         float spread = reach();
@@ -76,6 +78,10 @@ final class AppFocusGlow {
             cornerRadius = radius;
         }
         haloPaint.setAlpha(Math.round(255 * opacity));
+        int saved = canvas.save();
+        inside.rewind();
+        inside.addRoundRect(bounds, radius, radius, Path.Direction.CW);
+        canvas.clipOutPath(inside);
         float l = bounds.left, t = bounds.top, r = bounds.right, b = bounds.bottom;
         haloPaint.setShader(edge);
         matrix.setScale(1, -spread);
@@ -102,6 +108,7 @@ final class AppFocusGlow {
         drawCorner(canvas, r - radius, t - spread, r + spread, t + radius, r - radius, t + radius, outer);
         drawCorner(canvas, l - spread, b - radius, l + radius, b + spread, l + radius, b - radius, outer);
         drawCorner(canvas, r - radius, b - radius, r + spread, b + spread, r - radius, b - radius, outer);
+        canvas.restoreToCount(saved);
     }
 
     private void drawCorner(Canvas canvas, float l, float t, float r, float b, float cx, float cy, float outer) {

@@ -73,6 +73,13 @@ public class AppFocusGlowTest {
         assertEquals(0, Color.alpha(halo(0f).getPixel(168, 44)));
     }
 
+    @Test public void haloNeverFillsTheInsideOfItsRoundedBorder() {
+        Bitmap bitmap = halo(1f);
+        assertEquals("Straight interior stays empty", 0, Color.alpha(bitmap.getPixel(285, 115)));
+        assertEquals("Corner interior stays empty too", 0, Color.alpha(bitmap.getPixel(278, 58)));
+        assertEquals("Centre stays empty", 0, Color.alpha(bitmap.getPixel(168, 115)));
+    }
+
     @Test public void renderSingleRoundedRimAndPreview() throws Exception {
         Bitmap bitmap = Bitmap.createBitmap(336, 231, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
@@ -94,7 +101,7 @@ public class AppFocusGlowTest {
         tile.setTextSize(22);
         tile.setTextAlign(Paint.Align.CENTER);
         canvas.drawText("Selected app", 168, 124, tile);
-        File output = new File("build/outputs/focus-preview.png");
+        File output = new File("build/outputs/glow-only-preview.png");
         output.getParentFile().mkdirs();
         try (FileOutputStream stream = new FileOutputStream(output)) {
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);

@@ -339,13 +339,6 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         Backdrop.watch(grid);
         setUpGlider();
         holdFirstFrame();
-        for (int i = 0; i < grid.getItemDecorationCount(); i++) {
-            if (grid.getItemDecorationAt(i) instanceof DockDecoration) {
-                ((DockDecoration) grid.getItemDecorationAt(i)).setGlider(glider);
-            }
-        }
-        // The grid only shows the shape on the tray.
-        glider.addCompanion(grid, tray.area);
         for (int id : new int[]{R.id.btnInputs, R.id.btnWifi, R.id.btnSettings}) {
             View pill = findViewById(id);
             pill.setBackground(new GlassDrawable(pill, 21 * density, density, glider));
@@ -825,37 +818,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         Rect r = tileRect;
         r.set(0, 0, card.getWidth(), card.getHeight());
         root.offsetDescendantRectToMyCoords(card, r);
-        float pad = 6f * density;        // matches GlassView's glow inset
-        float w = card.getWidth() * AppAdapter.FOCUS_SCALE + 2 * pad;
-        float h = card.getHeight() * AppAdapter.FOCUS_SCALE + 2 * pad;
-        float x = r.exactCenterX() - w / 2f;
-        float y = r.exactCenterY() - h / 2f;
-
-        ViewGroup.LayoutParams lp = glass.getLayoutParams();
-        if (lp.width != (int) w || lp.height != (int) h) {
-            lp.width = (int) w;
-            lp.height = (int) h;
-            glass.setLayoutParams(lp);
-            // The rim is drawn inset by pad, right on the zoomed tile, so its corners use the tile's radius as is.
-            glass.setRadius(AppAdapter.cornerRadius(card.getWidth(), density) * AppAdapter.FOCUS_SCALE);
-        }
-        glassTargetX = x;
-        glassTargetY = y;
-        // Extend beyond the zoomed artwork so selection remains visible after the glide stops.
-        float frame = AppFocusGlow.FRAME_DP * density;
-        float cardRadius = AppAdapter.cornerRadius(card.getWidth(), density) * AppAdapter.FOCUS_SCALE + frame;
-        glider.setAppColor(adapter.ambientColorAt(position));
-        if (gliderOnPill) {
-            // Down from the top menu it travels dark, then reveals the app's coloured frame.
-            glider.moveTo(x + pad - frame, y + pad - frame, x + w - pad + frame, y + h - pad + frame, cardRadius);
-            glider.onArrive(() -> {
-                if (!gliderOnPill) glider.setStyle(Glider.GLASS);
-            });
-        } else {
-            // From app to app it is a pane of glass gliding behind them.
-            glider.setStyle(Glider.GLASS);
-            glider.moveTo(x + pad - frame, y + pad - frame, x + w - pad + frame, y + h - pad + frame, cardRadius);
-        }
+        float pad = 6f * density;
+        ((AppTileView) card).setGlowColor(adapter.ambientColorAt(position));
+        // App focus belongs to the tile itself. A separate spring pane can lag behind the artwork
+        // and leave exposed glass/shadow blocks, especially while the card is still zooming.
+        glider.hideNow();
         gliderOnPill = false;
         glassShown = true;
         View item = (View) card.getParent();

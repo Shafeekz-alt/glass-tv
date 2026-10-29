@@ -2,7 +2,6 @@ package com.gathin.tvhome;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.View;
@@ -20,14 +19,9 @@ public class DockDecoration extends RecyclerView.ItemDecoration {
     private final float density;
     private final Paint band = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final GlassRim edge;
-    private Glider glider;
-    private final int[] at = new int[2], gliderAt = new int[2];
     private final Backdrop.Fill blur = new Backdrop.Fill();
 
     private final RectF rect = new RectF();
-    private final Path trayClip = new Path();
-    /** The tray as last drawn, in the grid's coordinates: where the focus shape shows on it. */
-    final RectF area = new RectF();
 
     DockDecoration(int dockSize, float density) {
         this.dockSize = dockSize;
@@ -35,11 +29,6 @@ public class DockDecoration extends RecyclerView.ItemDecoration {
         // Same glass as the top-bar pills (GlassDrawable): an even veil and a shining edge.
         band.setColor(0x12FFFFFF);
         edge = new GlassRim(1.5f * density, 0xD9FFFFFF, 0x1AFFFFFF, 0.5f);
-    }
-
-    /** The focus shape: the tray's glass would hide it, so the tray paints it over the glass itself. */
-    void setGlider(Glider glider) {
-        this.glider = glider;
     }
 
     @Override
@@ -75,22 +64,9 @@ public class DockDecoration extends RecyclerView.ItemDecoration {
         if (!any) return;
         float pad = 14 * density;
         rect.inset(-pad, -pad);
-        area.set(rect);
         float radius = 26 * density;
         blur.draw(c, parent, rect, radius, 1f);
         c.drawRoundRect(rect, radius, radius, band);
-        // The focus frame of a dock tile sits on the tray's glass and under the tiles; the rest of
-        // the shape, outside the tray, is the glider itself showing behind.
-        if (glider != null && glider.isShowing()) {
-            parent.getLocationInWindow(at);
-            glider.getLocationInWindow(gliderAt);
-            c.save();
-            trayClip.rewind();
-            trayClip.addRoundRect(rect, radius, radius, Path.Direction.CW);
-            c.clipPath(trayClip);
-            glider.drawShape(c, gliderAt[0] - at[0], gliderAt[1] - at[1], parent);
-            c.restore();
-        }
         // Drawn just inside the tray, as the pills draw theirs: a stroke centred on the boundary
         // spreads over an extra pixel and reads thicker than the pills' edge.
         float half = edge.paint.getStrokeWidth() / 2f;
